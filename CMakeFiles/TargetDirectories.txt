@@ -1,0 +1,4 @@
+/export/tmp/4205_10/ele4205_projet_aut2021_10/CMakeFiles/rebuild_cache.dir
+/export/tmp/4205_10/ele4205_projet_aut2021_10/CMakeFiles/edit_cache.dir
+/export/tmp/4205_10/ele4205_projet_aut2021_10/CMakeFiles/client.dir
+/export/tmp/4205_10/ele4205_projet_aut2021_10/CMakeFiles/server.dir
