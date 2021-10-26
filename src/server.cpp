@@ -17,7 +17,31 @@
 using namespace std;
 using namespace cv;
 
-int main(int argc, char *argv)
+void captureFrame(Mat &frame)
+{
+    /*int resolutionChoice = 6;
+    int resX = usbCameraTimings[resolutionChoice].resX;
+    int resY = usbCameraTimings[resolutionChoice].resY;*/
+    VideoCapture capture("capture.avi");
+    //capture.set(CV_CAP_PROP_FRAME_WIDTH, resX);
+    //capture.set(CV_CAP_PROP_FRAME_HEIGHT, resY);
+    if (!capture.isOpened())
+    {
+        cout << "Failed to connect to the camera." << endl;
+        return;
+    }
+    capture >> frame;
+    if (frame.empty())
+    {
+        cout << "Failed to capture an image" << endl;
+        return;
+    }
+    capture.release();
+    cout << "Capture complete" << endl;
+    return;
+}
+
+int main(int argc, char *argv[])
 {
     int sockfd, newsockfd, portno;
     struct sockaddr_in serv_addr, cli_addr;
@@ -56,6 +80,7 @@ int main(int argc, char *argv)
         return 0;
     }
 
+    cout << "Listening on port 4099" << endl;
     newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &addr_len);
 
     if (newsockfd < 0)
@@ -63,55 +88,37 @@ int main(int argc, char *argv)
         perror("Connection refused");
         return 0;
     }
+    cout << "Connection accepted" << endl;
     // Démarrer la caméra, capturer une image et envoyer l'image au client
 
-    Mat *pframe;
-    captureImage(pframe);
+    /*Mat test;
+    captureImage(test);
+    imshow("Capture", test);
+    waitKey(0);*/
 
-    int written;
-    written = write(newsockfd, reinterpret_cast<char *>(pframe), sizeof(Mat));
+    Mat *pframe = new Mat(imread("asce.jpg"));
 
-    char buffer[BUFFER_SIZE];
+    // send the header
+    n = write(newsockfd, reinterpret_cast<char *>(pframe), sizeof(Mat));
+
+    // send the data
+    char *buffer = new char[BUFFER_SIZE];
     long long int bytes_sent = 0;
+    int frame_size = pframe->total() * pframe->elemSize();
 
-    int computedSize = pframe->cols * pframe->rows * CV_MAT_DEPTH(pframe->flags) * CV_MAT_CN(pframe->flags);
-
-    while (bytes_sent != computedSize)
+    while (bytes_sent != frame_size)
     {
-        buffer = pframe->data + bytes_sent;
-        if (computedSize - bytes_sent < BUFFER_SIZE)
-        {
-            written = write(newsockfd, buffer, computedSize - bytes_sent);
-        }
-        else
-        {
-            written = write(newsockfd, buffer, BUFFER_SIZE);
-        }
-        bytes_sent += written;
+        int block_size = frame_size - bytes_sent < BUFFER_SIZE ? frame_size - bytes_sent : BUFFER_SIZE;
+        memcpy(buffer, pframe->data + bytes_sent, block_size);
+        n = write(newsockfd, buffer, block_size);
+        bytes_sent += n;
     }
 
     close(newsockfd);
+    close(sockfd);
+
+    delete pframe;
+    delete buffer;
 
     return 0;
-}
-
-bool captureImage(Mat *pframe)
-{
-    int resolutionChoice = 6;
-    int resX = usbCameraTimings[resolutionChoice].resX;
-    int resY = usbCameraTimings[resolutionChoice].resY;
-    VideoCapture capture(0);
-    capture.set(CV_CAP_PROP_FRAME_WIDTH, resX);
-    capture.set(CV_CAP_PROP_FRAME_HEIGHT, resY);
-    if (!capture.isOpened())
-    {
-        cout << "Failed to connect to the camera." << endl;
-    }
-    capture >> *pframe;
-    if (pframe->empty())
-    {
-        cout << "Failed to capture an image" << endl;
-        return false;
-    }
-    return true;
 }
