@@ -10,6 +10,6 @@ CameraCapture::CameraCapture() : VideoCapture(0)
 void CameraCapture::setResolution()
 {
     //To be changed
-    this->set(cv::CAP_PROP_FRAME_WIDTH, 800);
-    this->set(cv::CAP_PROP_FRAME_HEIGHT, 600);
+    this->set(CV_CAP_PROP_FRAME_WIDTH, 800);
+    this->set(CV_CAP_PROP_FRAME_HEIGHT, 600);
 }

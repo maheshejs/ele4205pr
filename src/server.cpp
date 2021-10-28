@@ -3,6 +3,7 @@
  */
 
 #include "common.h"
+#include "CameraCapture.h"
 #include <netdb.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -94,7 +95,7 @@ int main(int argc, char *argv[])
     MESSAGE msg = {.rawData = 0};
     Mat frame;
 
-    VideoCapture capture("test.avi");
+    CameraCapture capture;
     if (!capture.isOpened())
     {
         cout << "Failed to parse video" << endl;
