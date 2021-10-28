@@ -11,7 +11,6 @@
 #include <cstring>
 #include <fstream>
 #include <opencv2/opencv.hpp>
-#include "CameraCapture.h"
 
 #define PORT_NUMBER 4099
 
@@ -95,10 +94,14 @@ int main(int argc, char *argv[])
     MESSAGE msg = {.rawData = 0};
     Mat frame;
 
-    CameraCapture capture;
+    VideoCapture capture("test.avi");
+    if (!capture.isOpened())
+    {
+        cout << "Failed to parse video" << endl;
+        return 0;
+    }
     while (1)
     {
-        //capture.setResolution();
         capture >> frame;
         if (frame.empty())
         {
