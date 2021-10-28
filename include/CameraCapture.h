@@ -1,4 +1,8 @@
+#ifndef CAMERA_CAPTURE_H
+#define CAMERA_CAPTURE_H
+
 #include <opencv2/opencv.hpp>
+#include "common.h"
 
 class CameraCapture : public cv::VideoCapture
 {
@@ -8,5 +12,7 @@ public:
     //constructeur
     CameraCapture();
 
-    void setResolution();
+    void setResolution(uint32_t res);
 };
+
+#endif

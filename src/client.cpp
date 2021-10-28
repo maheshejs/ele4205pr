@@ -50,7 +50,9 @@ int main(int argc, char *argv[])
 	int sockfd = initClient(argc, argv);
 
     Mat header;
+	MESSAGE msg = {.rawData = 0};
 	int n;
+
     while (1)
     {
         // Réception du header
@@ -68,10 +70,12 @@ int main(int argc, char *argv[])
 
 		// Affichage du vidéo
         imshow("Frame", frame);
-        int key = waitKey(30);
 
-        MESSAGE msg = {.rawData = 0};
-        if ((key & 0xFF) == KEY_ESC)
+        int keyFlags = waitKey(30);
+		int key = keyFlags & 0xFF;
+		msg.f.OK = 0;
+
+		if (key == KEY_ESC)
         {
             msg.f.QUIT = 1;
             n = write(sockfd, &msg, sizeof(msg));
@@ -79,8 +83,15 @@ int main(int argc, char *argv[])
         }
         else
         {
-            msg.f.OK = 1;
-            n = write(sockfd, &msg, sizeof(msg));
+			switch(key)
+			{
+				case '1':case '2':case '3':case '4':
+					msg.f.RES = key - '1';
+				default:
+					msg.f.OK = 1;
+					n = write(sockfd, &msg, sizeof(msg));
+					break;
+			}
         }
     }
 

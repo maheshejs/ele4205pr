@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
     
 	int n;
     MESSAGE msg = {.rawData = 0};
+	uint32_t currentRes = 0;
     Mat frame;
 
     while (1)
@@ -85,7 +86,17 @@ int main(int argc, char *argv[])
         n = recv(sockets.comm, &msg, sizeof(msg), MSG_WAITALL);
 
         if (msg.f.QUIT)
+		{
             break;
+		}
+		else
+		{
+			if (msg.f.RES != currentRes)
+			{
+				currentRes = msg.f.RES;
+				capture.setResolution(currentRes);
+			}		
+		}
     }
 
     close(sockets.comm);
