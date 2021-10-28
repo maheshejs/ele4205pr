@@ -16,6 +16,11 @@
 using namespace std;
 using namespace cv;
 
+const char ADC_FILE_PATH[] = "/sys/class/saradc/ch0";
+const char BTN_FILE_PATH[] = "/sys/class/gpio/gpio228/value";
+
+const int INTENSITY_THRESHOLD = 128;
+
 tcpSockets initServer()
 {
 	int sockfd, newsockfd;
@@ -53,14 +58,42 @@ tcpSockets initServer()
 	return {sockfd, newsockfd};
 }
 
-int main(int argc, char *argv[])
+int getValueFromFile(const char* filePath)
+{
+	int value;
+	ifstream file (filePath);
+  	if (file.is_open())
+	{
+		file >> value;
+    	file.close();
+		return value;
+	}
+
+	throw runtime_error("Unable to open file"); 
+}
+
+SERVER_MESSAGE computeServerMessage()
+{
+	SERVER_MESSAGE serverMessage = {.rawData = 0};
+
+	bool isTooDark = getValueFromFile(ADC_FILE_PATH) > INTENSITY_THRESHOLD;
+	bool isButtonPushed = getValueFromFile(BTN_FILE_PATH) == 0;
+
+	serverMessage.f.IDOWN = isTooDark;
+	serverMessage.f.PUSHB = !isTooDark && isButtonPushed;
+	serverMessage.f.READY = !isTooDark && !isButtonPushed;
+
+	return serverMessage;
+}
+
+int main(int argc, char* argv[])
 {
     tcpSockets sockets = initServer();
 
   	CameraCapture capture;
     
 	int n;
-    MESSAGE msg = {.rawData = 0};
+    CLIENT_MESSAGE msg = {.rawData = 0};
 	uint32_t currentRes = 0;
     Mat frame;
 
@@ -71,31 +104,38 @@ int main(int argc, char *argv[])
 	    if (frame.empty()) 
 			throw runtime_error("Failed to capture image");
 
-        // Send the header
-        n = write(sockets.comm, &frame, sizeof(Mat));
+		// Send the server message
+		SERVER_MESSAGE serverMsg = computeServerMessage();
+		n = write(sockets.comm, &serverMsg, sizeof(SERVER_MESSAGE));
 
-        // Send the data
-        int frame_size = frame.total() * frame.elemSize();
-
-        for (long long int bytes_sent = 0; bytes_sent != frame_size; bytes_sent += n)
-        {
-            int block_size = frame_size - bytes_sent < BUFFER_SIZE ? frame_size - bytes_sent : BUFFER_SIZE;
-            n = write(sockets.comm, frame.data + bytes_sent, block_size);
-        }
-
-        n = recv(sockets.comm, &msg, sizeof(msg), MSG_WAITALL);
-
-        if (msg.f.QUIT)
+		if (!serverMsg.f.IDOWN)
 		{
-            break;
-		}
-		else
-		{
-			if (msg.f.RES != currentRes)
+		    // Send the header
+		    n = write(sockets.comm, &frame, sizeof(Mat));
+
+		    // Send the data
+		    int frame_size = frame.total() * frame.elemSize();
+
+		    for (long long int bytes_sent = 0; bytes_sent != frame_size; bytes_sent += n)
+		    {
+		        int block_size = frame_size - bytes_sent < BUFFER_SIZE ? frame_size - bytes_sent : BUFFER_SIZE;
+		        n = write(sockets.comm, frame.data + bytes_sent, block_size);
+		    }
+
+		    n = recv(sockets.comm, &msg, sizeof(CLIENT_MESSAGE), MSG_WAITALL);
+
+		    if (msg.f.QUIT)
 			{
-				currentRes = msg.f.RES;
-				capture.setResolution(currentRes);
-			}		
+		        break;
+			}
+			else
+			{
+				if (msg.f.RES != currentRes)
+				{
+					currentRes = msg.f.RES;
+					capture.setResolution(currentRes);
+				}		
+			}
 		}
     }
 

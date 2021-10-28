@@ -11,13 +11,24 @@
 
 #include<cstdint>
 
-union MESSAGE
+union CLIENT_MESSAGE
 {
     struct
     {
         uint32_t OK     : 1;
         uint32_t QUIT   : 1;
 		uint32_t RES	: 2;
+    } f;
+    uint32_t rawData;
+};
+
+union SERVER_MESSAGE
+{
+    struct
+    {
+        uint32_t READY	: 1;
+        uint32_t IDOWN	: 1;
+		uint32_t PUSHB	: 1;
     } f;
     uint32_t rawData;
 };
