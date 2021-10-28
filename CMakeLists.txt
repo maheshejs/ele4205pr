@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 2.8)
 
 if(CMAKE_BUILD_TYPE MATCHES Release)
     message("Release Build")

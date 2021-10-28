@@ -6,6 +6,8 @@
 
 #define BUFFER_SIZE 1024000 // bytes
 #define NUMBER_OF_RESOLUTIONS 13
+#define PORT_NUMBER 4099
+
 #include <cstdint>
 union MESSAGE
 {
@@ -16,6 +18,13 @@ union MESSAGE
     } f;
     uint32_t rawData;
 };
+
+struct tcpSockets
+{
+	int init;
+	int comm;
+};
+
 struct timing
 {
     int resX;

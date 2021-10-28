@@ -13,23 +13,19 @@
 #include <fstream>
 #include <opencv2/opencv.hpp>
 
-#define PORT_NUMBER 4099
+#define KEY_ESC 27
 
 using namespace std;
 using namespace cv;
 
-int main(int argc, char *argv[])
+int initClient(int argc, char *argv[]) 
 {
-
-    int sockfd, portno, n;
+    int sockfd;
     struct sockaddr_in serv_addr;
     socklen_t addr_len;
 
     if (argc != 2)
-    {
-        perror("Invalid number of arguments. Usage: client <serveraddress>");
-        return 0;
-    }
+        throw runtime_error("Invalid number of arguments. Usage: client <serveraddress>");
 
     serv_addr.sin_family = AF_INET;
     inet_aton(argv[1], &serv_addr.sin_addr);
@@ -38,21 +34,23 @@ int main(int argc, char *argv[])
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sockfd < 0)
-    {
-        perror("Could not create socket");
-        return 0;
-    }
+        throw runtime_error("Could not create socket");
 
     addr_len = sizeof(serv_addr);
 
     int connected = connect(sockfd, (const sockaddr *)&serv_addr, addr_len);
     if (connected < 0)
-    {
-        perror("Connection failed");
-        return 0;
-    }
+        throw runtime_error("Connection failed");
+	
+	return sockfd;
+}
+
+int main(int argc, char *argv[])
+{
+	int sockfd = initClient(argc, argv);
 
     Mat header;
+	int n;
     while (1)
     {
         // Réception du header
@@ -68,10 +66,12 @@ int main(int argc, char *argv[])
         }
         Mat frame(header.rows, header.cols, header.type(), data);
 
+		// Affichage du vidéo
         imshow("Frame", frame);
         int key = waitKey(30);
+
         MESSAGE msg = {.rawData = 0};
-        if ((key & 0xFF) == 27)
+        if ((key & 0xFF) == KEY_ESC)
         {
             msg.f.QUIT = 1;
             n = write(sockfd, &msg, sizeof(msg));
