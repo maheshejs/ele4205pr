@@ -29,7 +29,7 @@ if(PNGFILES)
 endif(PNGFILES)
 
 project(Projet CXX C)
-add_executable(server src/server.cpp)
+add_executable(server src/server.cpp src/CameraCapture.cpp)
 add_executable(client src/client.cpp)
 
 if(MSVC)
