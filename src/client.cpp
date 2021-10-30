@@ -67,12 +67,12 @@ int main(int argc, char *argv[])
             n = recv(sockfd, &header, sizeof(Mat), MSG_WAITALL);
 
             // Receive data
-            int frame_size = header.rows * header.cols * CV_ELEM_SIZE(header.flags);
-            uchar data[frame_size];
-            for (long long int bytes_received = 0; bytes_received != frame_size; bytes_received += n)
+            int frameSize = header.rows * header.cols * CV_ELEM_SIZE(header.flags);
+            uchar data[frameSize];
+            for (long long int bytesReceived = 0; bytesReceived != frameSize; bytesReceived += n)
             {
-                int block_size = frame_size - bytes_received < BUFFER_SIZE ? frame_size - bytes_received : BUFFER_SIZE;
-                n = read(sockfd, data + bytes_received, block_size);
+                int blockSize = frameSize - bytesReceived < BUFFER_SIZE ? frameSize - bytesReceived : BUFFER_SIZE;
+                n = read(sockfd, data + bytesReceived, blockSize);
             }
             Mat frame(header.rows, header.cols, header.type(), data);
 
