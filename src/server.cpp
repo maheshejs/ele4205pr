@@ -99,27 +99,27 @@ int main(int argc, char *argv[])
 
     while (!clientMsg.f.QUIT)
     {
-        capture >> frame;
-
-        if (frame.empty())
-            throw runtime_error("Failed to capture image");
-
         // Send the server message
         SERVER_MESSAGE serverMsg = computeServerMessage();
         n = write(sockets.comm, &serverMsg, sizeof(SERVER_MESSAGE));
 
         if (!serverMsg.f.IDOWN)
         {
+            capture >> frame;
+
+            if (frame.empty())
+                throw runtime_error("Failed to capture image");
+
             // Send the header
             n = write(sockets.comm, &frame, sizeof(Mat));
 
             // Send the data
-            int frame_size = frame.total() * frame.elemSize();
+            int frameSize = frame.total() * frame.elemSize();
 
-            for (long long int bytes_sent = 0; bytes_sent != frame_size; bytes_sent += n)
+            for (long long int bytesSent = 0; bytesSent != frameSize; bytesSent += n)
             {
-                int block_size = frame_size - bytes_sent < BUFFER_SIZE ? frame_size - bytes_sent : BUFFER_SIZE;
-                n = write(sockets.comm, frame.data + bytes_sent, block_size);
+                int blockSize = frameSize - bytesSent < BUFFER_SIZE ? frameSize - bytesSent : BUFFER_SIZE;
+                n = write(sockets.comm, frame.data + bytesSent, blockSize);
             }
 
             n = recv(sockets.comm, &clientMsg, sizeof(CLIENT_MESSAGE), MSG_WAITALL);
