@@ -9,6 +9,6 @@ CameraCapture::CameraCapture() : cv::VideoCapture(0)
 
 void CameraCapture::setResolution(uint32_t ID_RESOLUTION)
 {
-    this->set(cv::CAP_PROP_FRAME_WIDTH, USB_CAMERA_RESOLUTIONS[ID_RESOLUTION].x);
-    this->set(cv::CAP_PROP_FRAME_HEIGHT, USB_CAMERA_RESOLUTIONS[ID_RESOLUTION].y);
+    this->set(CV_CAP_PROP_FRAME_WIDTH, USB_CAMERA_RESOLUTIONS[ID_RESOLUTION].x);
+    this->set(CV_CAP_PROP_FRAME_HEIGHT, USB_CAMERA_RESOLUTIONS[ID_RESOLUTION].y);
 }
