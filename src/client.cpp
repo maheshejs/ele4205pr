@@ -12,11 +12,16 @@
 #include <fstream>
 #include <opencv2/opencv.hpp>
 #include <cstring>
+#include <string>
+#include <tesseract/baseapi.h>
+#include <leptonica/allheaders.h>
 
 #define KEY_ESC 27
 
 using namespace std;
 using namespace cv;
+
+const string ACCEPTED_CHARS("abcdefgABCDEFGR0123456789#");
 
 int initClient(int argc, char *argv[])
 {
@@ -45,8 +50,67 @@ int initClient(int argc, char *argv[])
     return sockfd;
 }
 
+string readText(string fileName)
+{
+    // Code fortement inspiré de https://tesseract-ocr.github.io/tessdoc/APIExample.html
+    char* outText;
+
+    tesseract::TessBaseAPI* api = new tesseract::TessBaseAPI();
+    // Initialize tesseract-ocr with English, without specifying tessdata path
+    if (api->Init(NULL, "eng")) {
+        fprintf(stderr, "Could not initialize tesseract.\n");
+        exit(1);
+    }
+
+    // Open input image with leptonica library
+    Pix* image = pixRead(fileName.c_str());
+    api->SetImage(image);
+    // Get OCR result
+    outText = api->GetUTF8Text();
+    string output(outText);
+
+    // Destroy used object and release memory
+    api->End();
+    delete api;
+    delete[] outText;
+    pixDestroy(&image);
+
+    return output;
+}
+
+string processText(string text)
+{
+    string result = "";
+    for (char const &c: text) {
+        if (ACCEPTED_CHARS.find(c) != string::npos)
+        {
+            result += c;
+        }
+    }
+    return result;
+}
+
 int main(int argc, char *argv[])
 {
+    /*
+       for (int i = 1; i<20; i++){ 
+       cout << "Testing Frame" << i << ".png" << endl;
+       string fileName = "Frame" + to_string(i) + ".png";
+       Mat test = imread(fileName);
+       Mat gray, test2;
+       cvtColor(test, gray, CV_BGR2GRAY);
+       threshold(gray, test2, 127, 255, THRESH_BINARY);
+
+       imwrite("tesseract_frame.png", test2);
+       string text = readText("tesseract_frame.png");
+       cout << processText(text); 
+       if (processText(text) == "ABCDEFGRabcdefg012345679#") {
+       cout << " (GOOD!)";
+       }
+       cout << endl;
+       } 
+       */
+
     int sockfd = initClient(argc, argv);
 
     CLIENT_MESSAGE clientMsg = {.rawData = 0};
@@ -79,11 +143,21 @@ int main(int argc, char *argv[])
             if (serverMsg.f.PUSHB && !LAST_PUSHB)
             {
                 ++captureCount;
-                // Save image if button is pushed
+                // Save image and read text if button is pushed
                 if (fork() == 0)
                 {
                     string fileName = "Frame" + to_string(captureCount) + ".png";
                     imwrite(fileName.c_str(), frame);
+                    Mat gray, thresh;
+                    cvtColor(frame, gray, CV_BGR2GRAY);
+                    threshold(gray, thresh, 127, 255, THRESH_BINARY);
+                    imwrite("tesseract_frame.png", thresh);
+                    string text = readText("tesseract_frame.png");
+                    cout << processText(text); 
+                    if (processText(text) == "ABCDEFGRabcdefg012345679#") {
+                        cout << " (GOOD!)";
+                    }
+                    cout << endl;
                     return 0;
                 }
             }
@@ -98,15 +172,15 @@ int main(int argc, char *argv[])
 
             switch (key)
             {
-            case KEY_ESC:
-                clientMsg.f.OK = 0;
-                clientMsg.f.QUIT = 1;
-                break;
-            case '1': case '2': case '3': case '4':
-                clientMsg.f.RES = key - '1';
-            default:
-                clientMsg.f.OK = 1;
-                break;
+                case KEY_ESC:
+                    clientMsg.f.OK = 0;
+                    clientMsg.f.QUIT = 1;
+                    break;
+                case '1': case '2': case '3': case '4':
+                    clientMsg.f.RES = key - '1';
+                default:
+                    clientMsg.f.OK = 1;
+                    break;
             }
             n = write(sockfd, &clientMsg, sizeof(CLIENT_MESSAGE));
         }
@@ -114,4 +188,5 @@ int main(int argc, char *argv[])
 
     close(sockfd);
     return 0;
+
 }

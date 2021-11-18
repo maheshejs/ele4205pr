@@ -38,9 +38,10 @@ if(MSVC)
 endif(MSVC)
 
 target_include_directories(server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_include_directories(client PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(client PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include /usr/include/)
 find_package(Threads)
 target_link_libraries(server ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(client tesseract lept)
 target_link_libraries(client ${CMAKE_THREAD_LIBS_INIT})
 
 find_package(OpenCV REQUIRED)
