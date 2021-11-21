@@ -64,6 +64,7 @@ string readText(string fileName)
 
     // Open input image with leptonica library
     Pix* image = pixRead(fileName.c_str());
+    //api->SetVariable("tessedit_char_whitelist", "abcdefgABCDEFGR1248#");
     api->SetImage(image);
     // Get OCR result
     outText = api->GetUTF8Text();
