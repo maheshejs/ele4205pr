@@ -1,5 +1,5 @@
 /*
- * client.cpp
+ * mainClient.cpp
  */
 
 #include "ImageClient.h"

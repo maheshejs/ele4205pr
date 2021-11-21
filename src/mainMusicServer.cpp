@@ -1,5 +1,5 @@
 /*
- * ServerSongPlayer.cpp
+ * mainMusicServer.cpp
  *
  *  
  *      Author: 

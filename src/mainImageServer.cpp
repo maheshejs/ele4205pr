@@ -1,5 +1,5 @@
 /*
- * server.cpp
+ * mainImageServer.cpp
  */
 
 #include "ImageServer.h"
