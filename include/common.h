@@ -8,9 +8,10 @@
 #include <cstdint>
 
 #define BUFFER_SIZE 1024000
-#define PORT_NUMBER 4099
+#define IMAGE_SERVER_PORT 4099
+#define MUSIC_SERVER_PORT 4100
 
-union CLIENT_MESSAGE
+union IMAGE_CLIENT_MSG
 {
     struct
     {
@@ -21,7 +22,7 @@ union CLIENT_MESSAGE
     uint32_t rawData;
 };
 
-union SERVER_MESSAGE
+union IMAGE_SERVER_MSG
 {
     struct
     {
@@ -30,12 +31,6 @@ union SERVER_MESSAGE
         uint32_t PUSHB  : 1;
     } f;
     uint32_t rawData;
-};
-
-struct tcpSockets
-{
-    int init;
-    int comm;
 };
 
 #endif
