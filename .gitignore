@@ -3,3 +3,4 @@ build/*
 *.avi
 *.png
 Makefile
+*.swp
