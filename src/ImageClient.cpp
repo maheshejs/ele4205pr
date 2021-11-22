@@ -16,7 +16,7 @@ ImageClient::~ImageClient()
 {
 }
 
-void ImageClient::computeMessage(int key)
+IMAGE_CLIENT_MSG ImageClient::computeMessage(int key)
 {
     switch (key)
     {

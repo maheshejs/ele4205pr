@@ -6,6 +6,7 @@
  */
 
 #include "TCPClient.h"
+#include <stdexcept>
 
 TCPClient::TCPClient(int serv_port, std::string serv_addr){
     _serv_addr.sin_family = AF_INET;
@@ -23,7 +24,7 @@ void TCPClient::initSocket()
     _sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (_sockfd < 0)
-        throw std::runtime_error("Could not create socket");
+        throw std::runtime_error("Could not create socket.");
 
     int connected = connect(_sockfd, (const sockaddr *)&_serv_addr, addr_len);
     if (connected < 0)

@@ -29,9 +29,9 @@ if(PNGFILES)
 endif(PNGFILES)
 
 project(Projet CXX C)
-add_executable(mainImageServer src/mainImageServer.cpp src/CameraCapture.cpp)
-add_executable(mainClient src/mainClient.cpp)
-add_executable(mainMusicServer src/mainMusicServer.cpp src/PWMSongParser.cpp src/SongParser.cpp)
+add_executable(mainImageServer src/TCPServer.cpp src/ImageServer.cpp src/mainImageServer.cpp src/CameraCapture.cpp)
+add_executable(mainClient src/TCPClient.cpp src/ImageClient.cpp src/mainClient.cpp)
+add_executable(mainMusicServer src/TCPServer.cpp src/mainMusicServer.cpp src/PWMSongParser.cpp src/SongParser.cpp)
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")

@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
                 // Save image and read text if button is pushed
                 if (fork() == 0)
                 {
+                    /*
                     string fileName = "Frame" + to_string(captureCount) + ".png";
                     imwrite(fileName.c_str(), frame);
                     Mat gray, thresh;
@@ -109,6 +110,13 @@ int main(int argc, char *argv[])
                         cout << " (GOOD!)";
                     }
                     cout << endl;
+                    */
+                    string song = "120R8E8F#8G8c2R8D8E8F#8b2R8C8D8E8a2R8B8C#8D#8G2R8E8F#8G8c2R8D8E8F#8b2R8C8D8E8a2R8F#8a8G8E2R4D#8E8F#8B8F#4R8F#8E8F#8G2R8G8F#8G8a2R8D8d8c8b2r4a#8b8c8c8a8a8F#4R8c8b4b2R8E8a4a8G8F#4G8B4E1";
+                    int size = song.size();
+                    TCPClient musicClient(MUSIC_SERVER_PORT, string(argv[1]));
+                    musicClient.initSocket();
+                    n = write(musicClient.getCommSocket(), &size, sizeof(int));
+                    n = write(musicClient.getCommSocket(), song.c_str(), song.size());
                     return 0;
                 }
             }

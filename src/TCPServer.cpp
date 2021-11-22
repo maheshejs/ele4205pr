@@ -6,6 +6,7 @@
  */
 
 #include "TCPServer.h"
+#include <stdexcept>
 
 TCPServer::TCPServer(int port) {
     _port = port;

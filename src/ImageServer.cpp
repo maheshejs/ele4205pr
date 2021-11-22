@@ -6,6 +6,7 @@
  */
 
 #include "ImageServer.h"
+#include <stdexcept>
 
 ImageServer::ImageServer(int port) : TCPServer(port)
 {
@@ -15,7 +16,7 @@ ImageServer::ImageServer(int port) : TCPServer(port)
 ImageServer::~ImageServer() {
 }
 
-void ImageServer::computeMessage()
+IMAGE_SERVER_MSG ImageServer::computeMessage()
 {
     bool isTooDark = readFile(ADC_PATH) > INTENSITY_THRESHOLD;
     bool isButtonPushed = readFile(BTN_PATH) == 0;

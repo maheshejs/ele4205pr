@@ -21,11 +21,24 @@ int main(int argc, char *argv[])
     uint32_t CURRENT_RES = 0;
     int n = 0;
     Mat frame;
+    bool hasPushedButton = false;
 
     while (!clientMsg.f.QUIT)
     {
         // Send the server message
         serverMsg = imgServer.computeMessage();
+        if (serverMsg.f.PUSHB && !hasPushedButton) {
+            hasPushedButton = true;
+            if (fork() == 0)
+            {
+                execl("./mainMusicServer", "mainMusicServer", (char *)0);
+                return 0;
+            }
+        }
+        else {
+            hasPushedButton = false;
+        }
+
         n = write(imgServer.getCommSocket(), &serverMsg, sizeof(IMAGE_SERVER_MSG));
 
         if (!serverMsg.f.IDOWN)
