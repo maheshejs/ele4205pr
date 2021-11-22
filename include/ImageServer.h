@@ -22,8 +22,7 @@ public:
     ImageServer(int port);
     virtual ~ImageServer();
 
-    void computeMessage();
-    IMAGE_SERVER_MSG getMessage() const;
+    IMAGE_SERVER_MSG computeMessage();
     static int readFile(std::string filePath); 
 private:
     IMAGE_SERVER_MSG _serverMsg;

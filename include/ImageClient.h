@@ -19,8 +19,7 @@ public:
     ImageClient(int serv_port, std::string serv_addr);
     virtual ~ImageClient();
 
-    void computeMessage(int key);
-    IMAGE_CLIENT_MSG getMessage() const;
+    IMAGE_CLIENT_MSG computeMessage(int key);
 private:
     IMAGE_CLIENT_MSG _clientMsg;
 };

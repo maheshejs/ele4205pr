@@ -25,8 +25,7 @@ int main(int argc, char *argv[])
     while (!clientMsg.f.QUIT)
     {
         // Send the server message
-        imgServer.computeMessage();
-        serverMsg = imgServer.getMessage();
+        serverMsg = imgServer.computeMessage();
         n = write(imgServer.getCommSocket(), &serverMsg, sizeof(IMAGE_SERVER_MSG));
 
         if (!serverMsg.f.IDOWN)

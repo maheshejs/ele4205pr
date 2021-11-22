@@ -22,10 +22,6 @@ void ImageServer::computeMessage()
     _serverMsg.f.IDOWN = isTooDark;
     _serverMsg.f.PUSHB = !isTooDark && isButtonPushed;
     _serverMsg.f.READY = !isTooDark && !isButtonPushed;
-}
-
-IMAGE_SERVER_MSG ImageServer::getMessage() const
-{
     return _serverMsg;
 }
 

@@ -30,9 +30,6 @@ void ImageClient::computeMessage(int key)
             _clientMsg.f.OK = 1;
             break;
     }
-}
-
-IMAGE_CLIENT_MSG ImageClient::getMessage() const
-{
     return _clientMsg;
 }
+

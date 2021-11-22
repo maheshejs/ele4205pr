@@ -120,8 +120,7 @@ int main(int argc, char *argv[])
 
             int keyFlags = waitKey(30);
 
-            imgClient.computeMessage(keyFlags & 0xFF);
-            clientMsg = imgClient.getMessage();
+            clientMsg = imgClient.computeMessage(keyFlags & 0xFF);
             n = write(imgClient.getCommSocket(), &clientMsg, sizeof(IMAGE_CLIENT_MSG));
         }
     }
