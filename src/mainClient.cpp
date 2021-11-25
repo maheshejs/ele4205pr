@@ -1,54 +1,19 @@
 /*
- * client.cpp
+ * mainClient.cpp
  */
 
-#include "common.h"
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
+#include "ImageClient.h"
 #include <iostream>
-#include <fstream>
 #include <opencv2/opencv.hpp>
 #include <cstring>
 #include <string>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 
-#define KEY_ESC 27
-
 using namespace std;
 using namespace cv;
 
-const string ACCEPTED_CHARS("abcdefgABCDEFGR0123456789#");
-
-int initClient(int argc, char *argv[])
-{
-    int sockfd;
-    struct sockaddr_in serv_addr;
-    socklen_t addr_len;
-
-    if (argc != 2)
-        throw runtime_error("Invalid number of arguments. Usage: client <serveraddress>");
-
-    serv_addr.sin_family = AF_INET;
-    inet_aton(argv[1], &serv_addr.sin_addr);
-    serv_addr.sin_port = htons(PORT_NUMBER);
-
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    if (sockfd < 0)
-        throw runtime_error("Could not create socket");
-
-    addr_len = sizeof(serv_addr);
-
-    int connected = connect(sockfd, (const sockaddr *)&serv_addr, addr_len);
-    if (connected < 0)
-        throw runtime_error("Connection failed");
-
-    return sockfd;
-}
+const string ACCEPTED_CHARS = "abcdefgABCDEFGR0123456789#";
 
 string readText(string fileName)
 {
@@ -64,7 +29,7 @@ string readText(string fileName)
 
     // Open input image with leptonica library
     Pix* image = pixRead(fileName.c_str());
-    //api->SetVariable("tessedit_char_whitelist", "abcdefgABCDEFGR1248#");
+    api->SetVariable("tessedit_char_whitelist", ACCEPTED_CHARS.c_str());
     api->SetImage(image);
     // Get OCR result
     outText = api->GetUTF8Text();
@@ -88,34 +53,52 @@ string processText(string text)
             result += c;
         }
     }
+    // Fix 8's converted to B's
+    for (int i = 1; i < result.size(); i++)
+    {
+        if (result[i] == 'B' && (result[i-1] <= 'z' && result[i-1] >= 'A') || result[i-1] == '#') 
+        {
+            result[i] = '8';
+        }
+    }
+    // Fix D's converted to 0's
+    for (int i = 3; i < result.size(); i++)
+    {
+        if (result[i] == '0' && (result[i-1] <= '9' && result[i-1] >= '0'))
+        {
+            result[i] = 'D';
+        }
+    }
+    // Fix a's converted to 3's
+    for (int i = 3; i < result.size(); i++)
+    {
+        if (result[i] == '3' && (result[i-1] <= '9' && result[i-1] >= '0'))
+        {
+            result[i] = 'a';
+        }
+    }
+    // Fix G's converted to 6's
+    for (int i = 2; i < result.size(); i++)
+    {
+        if (result[i] == '6' && (result[i-1] <= '9' && result[i-1] >= '0'))
+        {
+            result[i] = 'G';
+        }
+    }
+    
     return result;
 }
 
 int main(int argc, char *argv[])
 {
-    /*
-       for (int i = 1; i<20; i++){ 
-       cout << "Testing Frame" << i << ".png" << endl;
-       string fileName = "Frame" + to_string(i) + ".png";
-       Mat test = imread(fileName);
-       Mat gray, test2;
-       cvtColor(test, gray, CV_BGR2GRAY);
-       threshold(gray, test2, 127, 255, THRESH_BINARY);
+    if (argc != 2)
+        throw runtime_error("Invalid number of arguments. Usage: client <serveraddress>");
 
-       imwrite("tesseract_frame.png", test2);
-       string text = readText("tesseract_frame.png");
-       cout << processText(text); 
-       if (processText(text) == "ABCDEFGRabcdefg012345679#") {
-       cout << " (GOOD!)";
-       }
-       cout << endl;
-       } 
-       */
+    ImageClient imgClient(IMAGE_SERVER_PORT, string(argv[1]));
+    imgClient.initSocket();
 
-    int sockfd = initClient(argc, argv);
-
-    CLIENT_MESSAGE clientMsg = {.rawData = 0};
-    SERVER_MESSAGE serverMsg = {.rawData = 0};
+    IMAGE_CLIENT_MSG clientMsg = {.rawData = 0};
+    IMAGE_SERVER_MSG serverMsg = {.rawData = 0};
     uint32_t LAST_PUSHB = 0;
     int n = 0;
     int captureCount = 0;
@@ -124,12 +107,12 @@ int main(int argc, char *argv[])
     while (!clientMsg.f.QUIT)
     {
         // Receive server message
-        n = recv(sockfd, &serverMsg, sizeof(SERVER_MESSAGE), MSG_WAITALL);
+        n = recv(imgClient.getCommSocket(), &serverMsg, sizeof(IMAGE_SERVER_MSG), MSG_WAITALL);
 
         if (!serverMsg.f.IDOWN)
         {
             // Receive the header
-            n = recv(sockfd, &header, sizeof(Mat), MSG_WAITALL);
+            n = recv(imgClient.getCommSocket(), &header, sizeof(Mat), MSG_WAITALL);
 
             // Receive data
             int frameSize = header.rows * header.cols * CV_ELEM_SIZE(header.flags);
@@ -137,7 +120,7 @@ int main(int argc, char *argv[])
             for (long long int bytesReceived = 0; bytesReceived != frameSize; bytesReceived += n)
             {
                 int blockSize = frameSize - bytesReceived < BUFFER_SIZE ? frameSize - bytesReceived : BUFFER_SIZE;
-                n = read(sockfd, data + bytesReceived, blockSize);
+                n = read(imgClient.getCommSocket(), data + bytesReceived, blockSize);
             }
             Mat frame(header.rows, header.cols, header.type(), data);
 
@@ -153,12 +136,18 @@ int main(int argc, char *argv[])
                     cvtColor(frame, gray, CV_BGR2GRAY);
                     threshold(gray, thresh, 127, 255, THRESH_BINARY);
                     imwrite("tesseract_frame.png", thresh);
-                    string text = readText("tesseract_frame.png");
-                    cout << processText(text); 
-                    if (processText(text) == "ABCDEFGRabcdefg012345679#") {
-                        cout << " (GOOD!)";
-                    }
+                    string song = processText(readText("tesseract_frame.png"));
+                    cout << song; 
                     cout << endl;
+                    // Autumn Leaves
+                    // string song = "120R8E8F#8G8c2R8D8E8F#8b2R8C8D8E8a2R8B8C#8D#8G2R8E8F#8G8c2R8D8E8F#8b2R8C8D8E8a2R8F#8a8G8E2R4D#8E8F#8B8F#4R8F#8E8F#8G2R8G8F#8G8a2R8D8d8c8b2R4a#8b8c8c8a8a8F#4R8c8b4b2R8E8a4a8G8F#4G8B4E1";
+                    // Smoke on the water
+                    // string song = "144C8R8D#8R8F4F8C8R8D#8R8F#8F2C8R8D#8R8F4F8D#8R8C1";
+                    int size = song.size();
+                    TCPClient musicClient(MUSIC_SERVER_PORT, string(argv[1]));
+                    musicClient.initSocket();
+                    n = write(musicClient.getCommSocket(), &size, sizeof(int));
+                    n = write(musicClient.getCommSocket(), song.c_str(), size);
                     return 0;
                 }
             }
@@ -169,25 +158,10 @@ int main(int argc, char *argv[])
             imshow("Frame", frame);
 
             int keyFlags = waitKey(30);
-            int key = keyFlags & 0xFF;
 
-            switch (key)
-            {
-                case KEY_ESC:
-                    clientMsg.f.OK = 0;
-                    clientMsg.f.QUIT = 1;
-                    break;
-                case '1': case '2': case '3': case '4':
-                    clientMsg.f.RES = key - '1';
-                default:
-                    clientMsg.f.OK = 1;
-                    break;
-            }
-            n = write(sockfd, &clientMsg, sizeof(CLIENT_MESSAGE));
+            clientMsg = imgClient.computeMessage(keyFlags & 0xFF);
+            n = write(imgClient.getCommSocket(), &clientMsg, sizeof(IMAGE_CLIENT_MSG));
         }
     }
-
-    close(sockfd);
     return 0;
-
 }
