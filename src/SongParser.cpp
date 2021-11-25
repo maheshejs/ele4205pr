@@ -34,6 +34,10 @@ void SongParser::readString(std::string song)
     {
         _tempo = atoi(song.substr(0, pos).c_str());
         song.erase(0, pos);
+        if (_tempo > 300)
+        {
+            throw std::runtime_error("Parsed tempo is too high");
+        }
     }
     else
     {
@@ -41,9 +45,8 @@ void SongParser::readString(std::string song)
     }
 
     while ((pos = song.find_first_of(digits)) != std::string::npos) {
-
         auto it = std::find(tones, tones + 24, song.substr(0, pos));
-        if (it != end(tones))
+        if (it != std::end(tones))
             c.frequency = std::round(std::pow(2.0, std::distance(tones, it)/12.0)*440);
         else
             c.frequency = 20000; // Inaudible frequency, silence
