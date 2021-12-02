@@ -14,6 +14,11 @@
 
 const int KEY_ESC = 27;
 
+/**
+ * \ class ImageClient
+ * ImageClient est une classe héritant de TCPClient (permettant la gestion de la connexion TCP/IP du côté client) et
+ * fournissant en plus une méthode pour envoyer les messages client.
+ * **/
 class ImageClient: public TCPClient{
 public:
     ImageClient(int serv_port, std::string serv_addr);
