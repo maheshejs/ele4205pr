@@ -1,8 +1,8 @@
-/*
- *  TCPServer.h
+/**
+ *  \file TCPServer.h
  *
- *  Date    : 2 décembre 2021
- *  Auteurs : Simon Larivière et Joseph Maheshe
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe
  */
 
 #ifndef TCPSERVER_H_

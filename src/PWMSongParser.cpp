@@ -1,8 +1,8 @@
-/*
- *  PWMSongParser.cpp
+/**
+ *  \file PWMSongParser.cpp
  *
- *  Date    : 2 décembre 2021
- *  Auteurs : Simon Larivière et Joseph Maheshe
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe, basé sur le code de Lucas Malo Bélanger
  */
 
 #include "PWMSongParser.h"

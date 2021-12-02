@@ -1,8 +1,8 @@
-/*
- *  CameraCapture.h 
+/**
+ *  \file CameraCapture.h 
  *
- *  Date    : 2 décembre 2021
- *  Auteurs : Simon Larivière et Joseph Maheshe
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe
  */
 #ifndef CAMERA_CAPTURE_H
 #define CAMERA_CAPTURE_H
@@ -11,10 +11,15 @@
 
 #define NUMBER_OF_RESOLUTIONS 13
 
+/**
+ * \struct resolution
+ * \brief Résolution d'une image
+ * 
+ */
 struct resolution
 {
-    int x;
-    int y;
+    int x; /*!< Largeur */
+    int y; /*!< Hauteur*/
 };
 
 const resolution USB_CAMERA_RESOLUTIONS[NUMBER_OF_RESOLUTIONS] = {

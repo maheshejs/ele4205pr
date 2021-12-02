@@ -1,5 +1,7 @@
-/*
- * common.h
+/**
+ * \file common.h
+ * \date 2 décembre
+ * \author Simon Larivière et Joseph Maheshe
  */
 
 #ifndef COMMON_H
@@ -22,7 +24,7 @@ union IMAGE_CLIENT_MSG
     {
         uint32_t OK     : 1; /*!< Requête d'une image au serveur*/
         uint32_t QUIT   : 1; /*!< Arrêt de communication avec le serveur*/
-        uint32_t RES    : 2; /*!< Résolution de l'image*/
+        uint32_t RES    : 2; /*!< Choix de résolution de l'image*/
     } f;
     uint32_t rawData;
 };

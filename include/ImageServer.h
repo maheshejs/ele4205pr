@@ -1,8 +1,8 @@
-/*
- *  ImageServer.h 
+/**
+ *  \file ImageServer.h 
  *
- *  Date    : 2 décembre 2021
- *  Auteurs : Simon Larivière et Joseph Maheshe
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe
  */
 
 #ifndef IMAGESERVER_H_
