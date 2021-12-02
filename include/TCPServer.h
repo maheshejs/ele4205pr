@@ -16,12 +16,34 @@
 #include <cstring>
 #include <iostream>
 
+/**
+ * \brief 
+ * 
+ */
 class TCPServer{
 public:
+    /**
+     * \brief Construct a new TCPServer object
+     * 
+     * \param port 
+     */
     TCPServer(int port);
+    /**
+     * \brief Destroy the TCPServer object
+     * 
+     */
     virtual ~TCPServer();
 
+    /**
+     * \brief 
+     * 
+     */
     void initSocket();
+    /**
+     * \brief Get the Comm Socket object
+     * 
+     * \return int 
+     */
     int getCommSocket() const;
 private:
     struct sockaddr_in _serv_addr;

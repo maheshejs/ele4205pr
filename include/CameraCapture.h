@@ -27,14 +27,24 @@ const resolution USB_CAMERA_RESOLUTIONS[NUMBER_OF_RESOLUTIONS] = {
     {1280, 960}
 };
 
+/**
+ * \brief 
+ * 
+ */
 class CameraCapture : public cv::VideoCapture
 {
-private:
-    /* data */
 public:
-    //constructeur
+    /**
+     * \brief Construct a new Camera Capture object
+     * 
+     */
     CameraCapture();
 
+    /**
+     * \brief Set the Resolution object
+     * 
+     * \param ID_RESOLUTION 
+     */
     void setResolution(uint32_t ID_RESOLUTION);
 };
 
