@@ -44,7 +44,6 @@ cd pwm-ctrl.42/
 echo 512 > duty0
 cd ~
 ./mainImageServer &
-bg
 exit
 ```
 
