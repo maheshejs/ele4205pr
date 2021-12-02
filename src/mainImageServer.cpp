@@ -1,6 +1,8 @@
-/*
- * mainImageServer.cpp
- */
+/**
+ * \file mainImageServer.cpp
+ * \date 2 décembre 2021 
+ * \author Simon Larivière et Joseph Maheshe, basé sur le code de Lucas Malo Bélanger
+**/
 
 #include "ImageServer.h"
 #include "CameraCapture.h"
@@ -9,7 +11,14 @@
 using namespace std;
 using namespace cv;
 
-
+/**
+ * \mainpage
+ * Cette application client-serveur permet de capturer des images côté serveur et les envoyer au client via le protocole TCP/IP. Le client affiche ces images et peut
+ * demander quatre résolutions différentes à l'aide des touches 1 à 4 du clavier. 
+ *
+ * Les images envoyées au client sont censées contenir du texte représentant de la musique sous forme codifiée. Lorsque l'on appuie sur un bouton côté serveur, le client 
+ * extrait le texte signifiant, corrige si nécessaire quelques erreurs et renvoie le texte au serveur pour celui-ci fasse jouer la musique.
+**/
 int main(int argc, char *argv[])
 {
     ImageServer imgServer(IMAGE_SERVER_PORT);
