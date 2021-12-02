@@ -1,9 +1,8 @@
-/*
- * ImageClient.cpp
- *
- * Date:       2 décembre 2021 
- * Auteurs:    Simon Larivière et Joseph Maheshe
-*/
+/**
+ * \file ImageClient.cpp
+ * \date 2 décembre 2021 
+ * \author Simon Larivière et Joseph Maheshe
+**/
 
 
 #include "ImageClient.h"
