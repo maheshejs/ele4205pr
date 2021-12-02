@@ -1,9 +1,8 @@
-/*
- * SongParser.h
- *
- * Date:       2 décembre 2021 
- * Auteurs:    Simon Larivière et Joseph Maheshe
-*/
+/**
+ * \file SongParser.h
+ * \date 2 décembre 2021 
+ * \author Simon Larivière et Joseph Maheshe, basé sur le code de Lucas Malo Bélanger
+**/
 
 #ifndef SONGPARSER_H_
 #define SONGPARSER_H_

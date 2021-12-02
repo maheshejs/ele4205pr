@@ -1,9 +1,15 @@
-/*
- * mainClient.cpp
+/**
+ * \file mainClient.cpp
+ * \brief 
+ * Ce client permet de se connecter à un serveur et pour recevoir des images content du texte censé représenter
+ * de la musique. Au signal du serveur, l'application client extrait le texte signifiant, corrige si nécessaire quelques 
+ * erreurs et renvoit le texte au serveur pour qu'il fasse jouer la musique.
  *
- * Date:       2 décembre 2021 
- * Auteurs:    Simon Larivière et Joseph Maheshe
-*/
+ * L'application client va également pouvoir afficher les images reçues du serveur sous forme de vidéo et demander un
+ * changement de résolution lorsque l'utilisateur appuie sur les touches 1 à 4 du clavier.
+ * \date 2 décembre 2021 
+ * \author Simon Larivière et Joseph Maheshe
+**/
 
 #include "ImageClient.h"
 #include <iostream>
@@ -113,12 +119,6 @@ string processText(string text)
 
 /**
  * \mainpage 
- * Ce client permet de se connecter à un serveur et pour recevoir des images content du texte censé représenter
- * de la musique. Au signal du serveur, l'application client extrait le texte signifiant, corrige si nécessaire quelques 
- * erreurs et renvoit le texte au serveur pour qu'il fasse jouer la musique.
- *
- * L'application client va également pouvoir afficher les images reçues du serveur sous forme de vidéo et demander un
- * changement de résolution lorsque l'utilisateur appuie sur les touches 1 à 4 du clavier.
 **/
 int main(int argc, char *argv[])
 {

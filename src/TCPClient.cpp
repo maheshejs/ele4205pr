@@ -1,10 +1,8 @@
-/*
- * TCPClient.cpp
- *
- * Date:       2 décembre 2021 
- * Auteurs:    Simon Larivière et Joseph Maheshe
-*/
-
+/**
+ * \file TCPClient.h
+ * \date 2 décembre 2021 
+ * \author Simon Larivière et Joseph Maheshe
+**/
 
 #include "TCPClient.h"
 #include <stdexcept>
