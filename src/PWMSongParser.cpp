@@ -1,15 +1,15 @@
 /*
- * PWMSongParser.cpp
+ *  PWMSongParser.cpp
  *
- *  
- *      Author: 
+ *  Date    : 2 décembre 2021
+ *  Auteurs : Simon Larivière et Joseph Maheshe
  */
 
 #include "PWMSongParser.h"
 
 PWMSongParser::PWMSongParser() {
-    frequencyPath = "/sys/devices/pwm-ctrl.42/freq0";
-    enablePath = "/sys/devices/pwm-ctrl.42/enable0";
+    _frequencyPath = "/sys/devices/pwm-ctrl.42/freq0";
+    _enablePath = "/sys/devices/pwm-ctrl.42/enable0";
 }
 
 PWMSongParser::~PWMSongParser() {
@@ -18,14 +18,14 @@ PWMSongParser::~PWMSongParser() {
 
 void PWMSongParser::tone(uint32_t frequency, uint32_t length) const
 {
-    std::ofstream enable(enablePath.c_str());
-    std::ofstream freq(frequencyPath.c_str());
+    std::ofstream enable(_enablePath.c_str());
+    std::ofstream freq(_frequencyPath.c_str());
     freq << frequency;
     freq.close();
     enable << 1;
     enable.close();
     usleep(length * 1000);
-    enable.open(enablePath.c_str());
+    enable.open(_enablePath.c_str());
     enable << 0;
     enable.close();
 }
