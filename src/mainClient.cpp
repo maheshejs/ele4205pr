@@ -127,22 +127,23 @@ int main(int argc, char *argv[])
             if (serverMsg.f.PUSHB && !LAST_PUSHB)
             {
                 ++captureCount;
-                // Save image and read text if button is pushed
                 if (fork() == 0)
                 {
+                    // Save frame to PNG
                     string fileName = "Frame" + to_string(captureCount) + ".png";
                     imwrite(fileName.c_str(), frame);
+
+                    // Preprocess frame with simple thresholding
                     Mat gray, thresh;
                     cvtColor(frame, gray, CV_BGR2GRAY);
                     threshold(gray, thresh, 127, 255, THRESH_BINARY);
-                    imwrite("tesseract_frame.png", thresh);
-                    string song = processText(readText("tesseract_frame.png"));
-                    cout << song; 
-                    cout << endl;
-                    // Autumn Leaves
-                    // string song = "120R8E8F#8G8c2R8D8E8F#8b2R8C8D8E8a2R8B8C#8D#8G2R8E8F#8G8c2R8D8E8F#8b2R8C8D8E8a2R8F#8a8G8E2R4D#8E8F#8B8F#4R8F#8E8F#8G2R8G8F#8G8a2R8D8d8c8b2R4a#8b8c8c8a8a8F#4R8c8b4b2R8E8a4a8G8F#4G8B4E1";
-                    // Smoke on the water
-                    // string song = "144C8R8D#8R8F4F8C8R8D#8R8F#8F2C8R8D#8R8F4F8D#8R8C1";
+
+                    // OCR followed by text processing
+                    imwrite("TesseractFrame.png", thresh);
+                    string song = processText(readText("TesseractFrame.png"));
+                    cout << song << endl; 
+
+                    // Send song size followed by string song
                     int size = song.size();
                     TCPClient musicClient(MUSIC_SERVER_PORT, string(argv[1]));
                     musicClient.initSocket();

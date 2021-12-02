@@ -8,13 +8,12 @@
 #include "PWMSongParser.h"
 
 PWMSongParser::PWMSongParser() {
-	//changez les chemins des fichiers fréquences et run ici!!!
-	frequencyPath = "/sys/devices/pwm-ctrl.42/freq0";
-	enablePath = "/sys/devices/pwm-ctrl.42/enable0";
+    frequencyPath = "/sys/devices/pwm-ctrl.42/freq0";
+    enablePath = "/sys/devices/pwm-ctrl.42/enable0";
 }
 
 PWMSongParser::~PWMSongParser() {
-	// TODO Auto-generated destructor stub
+    // TODO Auto-generated destructor stub
 }
 
 void PWMSongParser::tone(uint32_t frequency, uint32_t length) const
