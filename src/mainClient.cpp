@@ -110,9 +110,6 @@ string processText(string text)
     return result;
 }
 
-/**
- * \mainpage 
-**/
 int main(int argc, char *argv[])
 {
     if (argc != 2)
