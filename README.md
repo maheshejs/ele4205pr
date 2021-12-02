@@ -1,11 +1,61 @@
-Smoke on the water
-144C8R8D#8R8F4F8C8R8D#8R8F#8F2C8R8D#8R8F4F8D#8R8C1
+# Projet final ELE4205
 
-Bach concerto Brandebourgeois
-250C4E4G4c4b8c8b8a8G8F8E8D8C4E4G4c4d4G4
+## Contexte
 
-Britney Spears Oops I did it again
-80b8R8E8R8D#8E8F#8E2D8D8F#8A8G2D8a8b8a8G2b8a8G8E8D#8b8R8E8R8D#8E8F#8G8F#8E4D8D8F#8a8c4b4a4G4G8b8R8b8R8a8G8E8
+Cette application client-serveur permet de capturer des images côté serveur et les envoyer au client via le protocole TCP/IP. Le client affiche ces images et peut demander quatre résolutions différentes à l'aide des touches 1 à 4 du clavier.
 
+Les images envoyées au client sont censées contenir du texte représentant de la musique sous forme codifiée. Lorsque l'on appuie sur un bouton côté serveur, le client extrait le texte signifiant, corrige si nécessaire quelques erreurs et renvoie le texte au serveur pour celui-ci fasse jouer la musique.
 
+## Directives de compilation
 
+Pour la compilation, exécuter ces commandes dans le dossier où se trouve le projet cloné.
+
+```
+bash
+mkdir -p build/native build/odroid
+cd build/native
+cmake -DCMAKE_BUILD_TYPE=Release ../../
+make mainClient
+cd ../odroid
+source <path>/opt/poky/environment-setup-aarch64-poky-linux # Remplacer <path> par le chemin vers le dossier /opt/ contenant le SDK
+cmake -DCMAKE_BUILD_TYPE=Release ../../
+make mainImageServer mainMusicServer
+```
+
+## Exécution des programmes client et serveur
+
+Il faut ensuite copier les fichiers binaires sur le odroid par `scp` en s'assurant d'avoir configuré au préalable la connexion TCP/IP entre l'odroid et l'ordinateur.
+
+```
+scp bin/release/mainImageServer bin/release/mainMusicServer root@192.168.7.2:~/
+```
+
+On démarre le serveur sur l'odroid par les commandes suivantes.
+
+```
+sudo /users/Cours/ele4205/commun/scripts/ifconfig-enp0s-up
+ssh root@192.168.7.2
+echo 228 > /sys/class/gpio/export
+echo in > /sys/class/gpio/gpio228/direction
+cd /sys/devices/
+modprobe pwm-meson
+modprobe pwm-ctrl
+cd pwm-ctrl.42/
+echo 512 > duty0
+cd ~
+./mainImageServer &
+exit
+```
+
+On démarre le client sur l'ordinateur par les commandes suivantes.
+
+```
+cd ../native
+./bin/release/mainClient 192.168.7.2
+```
+
+## Usage
+
+Sur l'ordinateur, on peut changer la résolution de l'image à l'aide des touches 1 à 4 du clavier.
+
+Sur l'odroid, on déclenche la série d'événements menant à faire jouer la musique en appuyant sur le bouton.

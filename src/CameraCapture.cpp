@@ -1,3 +1,9 @@
+/**
+ *  \file CameraCapture.cpp 
+ *
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe
+ */
 #include "CameraCapture.h"
 
 CameraCapture::CameraCapture() : cv::VideoCapture(0)

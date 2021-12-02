@@ -1,8 +1,8 @@
-/*
- * mainMusicServer.cpp
+/**
+ *  \file mainMusicServer.cpp
  *
- *  
- *      Author: 
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe
  */
 
 #include "PWMSongParser.h"

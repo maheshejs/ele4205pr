@@ -1,8 +1,8 @@
-/*
- * TCPServer.cpp
+/**
+ *  \file TCPServer.cpp
  *
- *  
- *      Author: 
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe
  */
 
 #include "TCPServer.h"

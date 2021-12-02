@@ -1,8 +1,8 @@
-/*
- * 
+/**
+ *  \file TCPServer.h
  *
- *  Created on: 
- *      Author: 
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe
  */
 
 #ifndef TCPSERVER_H_
@@ -17,30 +17,30 @@
 #include <iostream>
 
 /**
- * \brief 
+ * \brief TCPServer est une classe de base qui fournit les méthodes permettant d'initier une connexion TCP/IP côté serveur 
  * 
  */
 class TCPServer{
 public:
     /**
-     * \brief Construct a new TCPServer object
+     * \brief Constructeur permettant d'initialiser le port pour l'objet TCPServer
      * 
-     * \param port 
+     * \param port Le port d'écoute
      */
     TCPServer(int port);
     /**
-     * \brief Destroy the TCPServer object
+     * \brief Destructeur de l'objet TCPServer
      * 
      */
     virtual ~TCPServer();
 
     /**
-     * \brief 
+     * \brief Fonction permettant d'initialiser le socket d'écoute et le socket de communication avec le client
      * 
      */
     void initSocket();
     /**
-     * \brief Get the Comm Socket object
+     * \brief Fonction permettant d'obtenir le descripteur du socket de communication
      * 
      * \return int 
      */

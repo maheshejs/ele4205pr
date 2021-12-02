@@ -1,8 +1,8 @@
-/*
- * 
+/**
+ *  \file ImageServer.h 
  *
- *  Created on: 
- *      Author: 
+ *  \date 2 décembre 2021
+ *  \author Simon Larivière et Joseph Maheshe
  */
 
 #ifndef IMAGESERVER_H_
@@ -18,34 +18,34 @@ const std::string BTN_PATH = "/sys/class/gpio/gpio228/value";
 const int INTENSITY_THRESHOLD = 128;
 
 /**
- * \brief 
+ * \brief ImageServer est une classe héritant de TCPServer qui fournit en plus une méthode pour envoyer un message au client
  * 
  */
 class ImageServer: public TCPServer{
 public:
     /**
-     * \brief Construct a new Image Server object
+     * \brief Constructeur permettant d'initialiser le port pour l'objet ImageServer
      * 
-     * \param port 
+     * \param port Le port d'écoute 
      */
     ImageServer(int port);
     /**
-     * \brief Destroy the Image Server object
+     * \brief Destructeur de l'objet ImageServer
      * 
      */
     virtual ~ImageServer();
 
     /**
-     * \brief 
+     * \brief Fonction permettant de déterminer le message (état du bouton-poussoir, luminosité du milieu) à envoyer au client
      * 
-     * \return IMAGE_SERVER_MSG 
+     * \return IMAGE_SERVER_MSG Le message à envoyer au client
      */
     IMAGE_SERVER_MSG computeMessage();
     /**
-     * \brief 
+     * \brief Fonction permettant de lire une valeur d'un fichier
      * 
-     * \param filePath 
-     * \return int 
+     * \param filePath Le chemin du fichier à lire
+     * \return int La valeur lue
      */
     static int readFile(std::string filePath); 
 private:

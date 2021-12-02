@@ -1,6 +1,8 @@
-/*
- * mainClient.cpp
- */
+/**
+ * \file mainClient.cpp
+ * \date 2 décembre 2021 
+ * \author Simon Larivière et Joseph Maheshe
+**/
 
 #include "ImageClient.h"
 #include <iostream>
@@ -13,11 +15,23 @@
 using namespace std;
 using namespace cv;
 
+/**
+ * \var ACCEPTED_CHARS
+ * \brief Chaîne de caractères contenant les caractères acceptés pour la lecture
+**/
 const string ACCEPTED_CHARS = "abcdefgABCDEFGR0123456789#";
 
+/**
+ * \fn readText(string fileName)
+ * \brief Fonction permettant de lire du texte dans un fichier image
+ * N.B.: Code fortement inspiré de https://tesseract-ocr.github.io/tessdoc/APIExample.html
+ * \param fileName
+ * Le chemin d'accès relatif du fichier image
+ * \return string La chaîne de caractère extraite de l'image
+**/
 string readText(string fileName)
 {
-    // Code fortement inspiré de https://tesseract-ocr.github.io/tessdoc/APIExample.html
+    // 
     char* outText;
 
     tesseract::TessBaseAPI* api = new tesseract::TessBaseAPI();
@@ -44,6 +58,13 @@ string readText(string fileName)
     return output;
 }
 
+/**
+ * \fn processText(string text)
+ * \brief Fonction permettant d'élaguer les caractères non voulus et corriger certaines erreurs possibles de lecture
+ * \param text
+ * La chaîne de caractère à traiter
+ * \return string La chaîne de caractère traitée
+**/
 string processText(string text)
 {
     string result = "";
