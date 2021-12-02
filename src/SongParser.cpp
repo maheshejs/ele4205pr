@@ -1,9 +1,10 @@
 /*
  * SongParser.cpp
  *
- *  Created on: 
- *      
- */
+ * Date:       2 décembre 2021 
+ * Auteurs:    Simon Larivière et Joseph Maheshe
+*/
+
 
 #include "SongParser.h"
 

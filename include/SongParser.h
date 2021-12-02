@@ -1,9 +1,9 @@
 /*
  * SongParser.h
  *
- *  
- *      Author: 
- */
+ * Date:       2 décembre 2021 
+ * Auteurs:    Simon Larivière et Joseph Maheshe
+*/
 
 #ifndef SONGPARSER_H_
 #define SONGPARSER_H_
@@ -17,32 +17,62 @@
 #include <algorithm>
 #include <cmath>
 
+/**
+ * \class SongParser
+ * \brief SongParser est une classe fournissant des méthodes pour convertir du texte en mélodie
+**/
 class SongParser {
 public:
+    /**
+     * \fn SongParser()
+     * \brief Constructeur pour l'objet SongParser
+    **/
     SongParser();
+    /**
+     * \fn ~SongParser()
+     * \brief Destructeur de l'objet SongParser
+    **/
     virtual ~SongParser();
 
-    //lecture du fichier qui contient la musique
+    /**
+     * \fn readString(std::string song)
+     * \brief Fonction permettant de lire une chaîne de caractères et la convertir en commandes musicales
+     * \param song
+     * La chaîne de caractères à convertir en commandes
+    **/
     void readString(std::string song);
     
-    //la musique est jouée
+    /**
+     * \fn play()
+     * \brief Fonction permettant d'exécuter les commandes musicales, faisant ainsi entendre la musique
+    **/
     virtual void play() const;
 
 private:
-        uint32_t _tempo;
-    //les commandes possibles
+    uint32_t _tempo;
+    
+    // Les commandes possibles
     struct command
     {
         uint32_t frequency;
         uint32_t length;
     };
     
-    //la liste des commandes qui composent la musique
+    // La liste des commandes qui composent la musique
     std::vector<command> _commands;
 protected:
+    /**
+     * \fn getCommands()
+     * \brief Fonction permettant d'obtenir la liste des commandes musicales
+    **/
     const std::vector<command>& getCommands() const;
 
-    //la fonction tone!! Vous devez héritez de cette fonction dans PWMTest
+    /**
+     * \fn tone(uint32_t frequency, uint32_t length)
+     * \brief Fonction permettant d'émettre un son d'une durée et d'une fréquence déterminées
+     * \param frequency La fréquence désirée
+     * \param length La durée désirée
+    **/
     virtual void tone(uint32_t frequency, uint32_t length) const;
 };
 

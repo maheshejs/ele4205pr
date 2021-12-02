@@ -1,6 +1,9 @@
 /*
  * mainClient.cpp
- */
+ *
+ * Date:       2 décembre 2021 
+ * Auteurs:    Simon Larivière et Joseph Maheshe
+*/
 
 #include "ImageClient.h"
 #include <iostream>
@@ -13,11 +16,23 @@
 using namespace std;
 using namespace cv;
 
+/**
+ * \var ACCEPTED_CHARS
+ * \brief Chaîne de caractères contenant les caractères acceptés pour la lecture
+**/
 const string ACCEPTED_CHARS = "abcdefgABCDEFGR0123456789#";
 
+/**
+ * \fn readText(string fileName)
+ * \brief Fonction permettant de lire du texte dans un fichier image
+ * N.B.: Code fortement inspiré de https://tesseract-ocr.github.io/tessdoc/APIExample.html
+ * \param fileName
+ * Le chemin d'accès relatif du fichier image
+ * \return string La chaîne de caractère extraite de l'image
+**/
 string readText(string fileName)
 {
-    // Code fortement inspiré de https://tesseract-ocr.github.io/tessdoc/APIExample.html
+    // 
     char* outText;
 
     tesseract::TessBaseAPI* api = new tesseract::TessBaseAPI();
@@ -44,6 +59,13 @@ string readText(string fileName)
     return output;
 }
 
+/**
+ * \fn processText(string text)
+ * \brief Fonction permettant d'élaguer les caractères non voulus et corriger certaines erreurs possibles de lecture
+ * \param text
+ * La chaîne de caractère à traiter
+ * \return string La chaîne de caractère traitée
+**/
 string processText(string text)
 {
     string result = "";
@@ -89,6 +111,15 @@ string processText(string text)
     return result;
 }
 
+/**
+ * \mainpage 
+ * Ce client permet de se connecter à un serveur et pour recevoir des images content du texte censé représenter
+ * de la musique. Au signal du serveur, l'application client extrait le texte signifiant, corrige si nécessaire quelques 
+ * erreurs et renvoit le texte au serveur pour qu'il fasse jouer la musique.
+ *
+ * L'application client va également pouvoir afficher les images reçues du serveur sous forme de vidéo et demander un
+ * changement de résolution lorsque l'utilisateur appuie sur les touches 1 à 4 du clavier.
+**/
 int main(int argc, char *argv[])
 {
     if (argc != 2)

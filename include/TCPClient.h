@@ -1,7 +1,10 @@
 /*
- *  Created on: 
- *      Author: 
- */
+ * TCPClient.h
+ *
+ * Date:       2 décembre 2021 
+ * Auteurs:    Simon Larivière et Joseph Maheshe
+*/
+
 
 #ifndef TCPCLIENT_H_
 #define TCPCLIENT_H_
@@ -15,41 +18,38 @@
 #include <string>
 
 /**
- * \ class TCPClient
- * TCPClient est une classe de base qui fournit des méthodes permettant d'initier une connexion TCP/IP côté client.
- * **/
+ * \class TCPClient
+ * \brief TCPClient est une classe de base qui fournit les méthodes permettant d'initier une connexion TCP/IP côté client
+**/
 class TCPClient{
     public:
         /**
-        \fn TCPClient(int serv_port, std::string serv_addr)
-        \brief Constructeur permettant d'initialiser les variables utiles pour la connexion au serveur
-        \param serv_port
-        Le port du serveur sur lequel se connecter
-        \param serv_addr
-        L'adresse IP du serveur sur lequel se connecter
-         **/
+         * \fn TCPClient(int serv_port, std::string serv_addr)
+         * \brief Constructeur pour l'objet TCPClient permettant d'initialiser les variables utiles pour la connexion au serveur
+         * \param serv_port
+         * Le port du serveur sur lequel se connecter
+         * \param serv_addr
+         * L'adresse IP du serveur sur lequel se connecter
+        **/
         TCPClient(int serv_port, std::string serv_addr);
         /**
-        \fn ~TCPClient()
-        \brief Destructeur standard
+         * \fn ~TCPClient()
+         * brief Destructeur de l'objet TCPClient
         **/
         virtual ~TCPClient();
 
         /**
-        \fn initSocket()
-        \brief Fonction permettant d'initier le socket de communication et établir la connexion avec le serveur
+         * \fn initSocket()
+         * \brief Fonction permettant d'initier le socket de communication et établir la connexion avec le serveur
         **/
         void initSocket();
         /**
-        \fn getCommSocket()
-        \brief Fonction permettant d'obtenir le descripteur du socket de communication
+         * \fn getCommSocket()
+         * \brief Fonction permettant d'obtenir le descripteur du socket de communication
+         * \return int Le descripteur de socket de communication
         **/
         int getCommSocket() const;
     private:
-        /**
-        \struct _serv_addr
-        \brief Structure contenant les inf
-        **/
         struct sockaddr_in _serv_addr;
         int _sockfd;
 };
